@@ -1,31 +1,49 @@
-
 name: Build Grim Scaffold
 
 on:
   push:
-    branches: [ main, master ]
+    branches: ['**']
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    # <<< If your project is in a subfolder, set it here (e.g. grimscaffold) >>>
+    defaults:
+      run:
+        working-directory: .
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Temurin JDK 21
+      - name: Debug — print repo tree
+        run: |
+          echo "PWD=$(pwd)"
+          echo "Top-level:"
+          ls -la
+          echo
+          echo "Recursive tree (first two levels):"
+          find . -maxdepth 2 -type d -print
+          echo
+          echo "Contents of libs (if present):"
+          ls -la libs || true
+
+      - name: Ensure Meteor JAR is present
+        run: |
+          if [ ! -f "libs/meteor-client-1.21.5-54.jar" ]; then
+            echo "::error::Missing libs/meteor-client-1.21.5-54.jar"
+            echo "libs directory contents:"
+            ls -la libs || true
+            exit 1
+          fi
+
+      - name: Set up Temurin JDK 21 (toolchain for build only)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-
-      - name: Verify Meteor jar present
-        run: |
-          if [ ! -f "libs/meteor-client-1.21.5-54.jar" ]; then
-            echo "::error::Missing libs/meteor-client-1.21.5-54.jar. Commit your Meteor jar into libs/ first."
-            exit 1
-          fi
 
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
