@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "grimscaffold",
+  "version": "${version}",
+  "name": "Grim Scaffold",
+  "description": "Places blocks under you using GrimAC bypass, Meteor GUI compatible.",
+  "authors": [
+    "Ty"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "~1.21.5",
+    "java": ">=21",
+    "meteor-client": "*"
+  },
+  "entrypoints": {
+    "meteor": [
+      "dev.cozi.grimscaffold.GrimScaffoldAddon"
+    ]
+  }
+}
